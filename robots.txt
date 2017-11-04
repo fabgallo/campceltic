@@ -1,0 +1,4 @@
+# robots.txt file for http://www.campceltic.ca/
+
+sitemap: http://cdn.attracta.com/sitemap/676496.xml.gz
+
