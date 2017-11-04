@@ -1,0 +1,260 @@
+#register_form .heading2 {
+    margin: 0;
+    padding: 0;
+    color: #3f4317;
+    font-family: "Trebuchet MS";
+    font-size:19px;
+}
+#register_form a {
+    color: #3d4100;
+}
+#register_form ul li {
+    list-style-type:none !important;
+}
+#controls a{
+    margin:25px 0 25px 0;
+}
+#prev {float:left;}
+#prev img {display: block;}
+#next, #nextDisabled {float: right;}
+#next img { display: block;}
+#register_form {
+    font-family: Arial;
+    font-size: 12px;
+    color: #5b5e5e;
+    line-height: 1.7em;
+}
+input, textarea {
+    background: url(//campceltic.ca/wp-content/themes/Startup/images/register_form/whitepixel.gif) repeat-x top #f5f5f5;;
+}
+input[type="text"], select {
+    width: 200px;
+    height: 30px;
+    border: 1px solid #cdcdcd;
+}
+input.search-field {
+	height: auto;
+}
+textarea {
+    border: 1px solid #cdcdcd;
+}
+input#step3DateOfBirth,
+input#step3City,
+input#step3Province,
+input#step3PostalCode,
+input#step5HomeTelephone1,
+input#step5AlternateTelephone1,
+input#step5HomeTelephone2,
+input#step5AlternateTelephone2,
+select#step3Country
+{
+    width:160px;
+}
+select#step3Country {
+    margin-left: 10px;
+}
+input#step3Address1, input#step3Address2 {
+    width: 280px;
+}
+
+input[type="radio"]{
+    position:relative;
+    top:2px;
+}
+input[type="checkbox"]{
+    position:relative;
+    top:2px;
+}
+#register_form, #slider {
+    position: relative;
+    width:612px;
+}
+#register_instructions {
+    margin-bottom:50px;
+}
+.step {
+    width:100%;
+    list-style-type: none;
+}
+.step p {
+    margin: 5px 0 10px 0;
+}
+.stepName, .stepCount, h1 {
+    color: #3f4317;
+    font-family: "Trebuchet MS";
+    font-size:23px;
+    padding-bottom: 10px;
+}
+.stepCount {
+    float:right;
+}
+.agegroup {
+    font-weight: normal !important;
+    font-family: Arial;
+    color: #5b5e5e;
+    font-size: 12px;
+}
+#step1 div {
+    padding: 15px 0 15px 0;
+    margin: 15px 0 15px 0;
+}
+#step1Section1 {
+    border-top: 1px dotted #c4c4c4;
+}
+#step1Section1 span, #step1Section2 span,#step1Section3 span, #step1Section4 span, #step1Section5 span, #step1Section6 span, #step1Section7 span {
+    font-weight: bold;
+}
+#step1Section1 input, #step1Section2 input, #step1Section3 input, #step1Section5 input, #step1Section6 input, #step1Section7 input {
+    margin-left:80px;
+    margin-top:15px;
+    margin-right: 5px;
+}
+#step1Section4 input {
+    margin:10px 10px 10px 0;
+}
+input.startrow {
+    margin-left:0px !important;
+}
+#step1Section2 {
+    border-top: 1px solid #c4c4c4;
+}
+#step1Section3 {
+     border-top: 1px solid #c4c4c4;
+}
+#step1Section3 label {
+    display: block;
+}
+#step1Section4 {
+    border-top: 1px solid #c4c4c4;
+}
+#step1Section5 {
+    border-top: 1px solid #c4c4c4;
+}
+.group6-last-input {
+    margin-left: 95px !important;
+}
+
+#step1Section6 .dottedBorder,
+#step2 .dottedBorder,
+#step3 .dottedBorder,
+#step4 .dottedBorder,
+#step5 .dottedBorder,
+#step6 .dottedBorder {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    height: 1px;
+    width:100%;
+    border-top: 1px dotted #c4c4c4;
+}
+#step2 .dottedBorder,
+#step3 .dottedBorder,
+#step4 .dottedBorder,
+#step5 .dottedBorder,
+#step6 .dottedBorder  {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    display: block;
+}
+#step2 h1 {
+    font-weight: normal;
+    font-size: 18px;
+}
+#step2 .heading2 {
+    font-weight: normal;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    font-size: 14px;
+}
+
+#step2 div {
+    font-weight: bold;
+    display: none;
+    border-bottom: 1px dotted #c4c4c4;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+#step2 label {
+
+}
+#step2 select {
+    margin:10px 0 0 10px;
+}
+#step3 input, #step4 input, #step5 input {
+    margin: 10px 5px 10px 10px;
+}
+
+.solidBorder {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    display: block;
+    height: 1px;
+    width:100%;
+    border-top: 1px solid #c4c4c4;
+}
+
+#step4 textarea, #step5 textarea, #step5HowDidYouHear {
+    width:292px;
+    height:133px;
+    resize: none;
+    margin-top: 10px;
+    margin-right:10px;
+    margin-bottom: 10px;
+}
+#step4MedicationsTaken {
+    width:600px;
+}
+#step5HowDidYouHear {
+    height:173px;
+    float: right;
+}
+#step5HowDidYouHear > input {
+    margin: 0 5px 0 0;
+}
+#step5HowDidYouHearOther {
+    margin-left: 20px;
+}
+#errors {
+     display: none;
+}
+#errorsList {
+    display: none;
+}
+#step1Section6, #step1Section7 {
+    display: none;
+}
+.warning-box {
+    margin: 25px 0 0 0;
+    padding: 15px 15px 20px 50px;
+    font-size: 1.2em;
+    background: #FFF2BF url(//campceltic.ca/wp-content/themes/Startup/images/register_form/warning_icon.png) no-repeat 10px 15px;
+    border: 1px solid #D7C993;
+    color: #A48200;
+}
+#submitBtn {
+    margin-top: 30px;
+    margin-left:20px;
+    cursor: pointer;
+    border:none;
+    text-indent:11111px;
+    width:92px;
+    height: 30px;
+    background: url(//campceltic.ca/wp-content/themes/Startup/images/register_form/ccr_submit.jpg) no-repeat;
+}
+.step6info {
+    min-height: 50px;
+}
+#step6 .heading2 {
+    display: inline;
+    font-family: "Trebuchet MS";
+    font-size: 17px;
+    color:#3f4317;
+    padding-right: 10px;
+}
+#step6 .editLink {
+    cursor: pointer;
+}
+.sessionHeader {
+    font-family: "Trebuchet MS";
+    font-size: 15px;
+    color: #3F4317;
+}
