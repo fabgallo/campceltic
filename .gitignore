@@ -21,3 +21,4 @@ sandbox/
 
 !/wp-content/themes/Startup/scripts/register_form/
 !/wp-content/themes/Startup/styles/register_form/
+!/wp-content/themes/Startup/tpl_payment_gateway.php
