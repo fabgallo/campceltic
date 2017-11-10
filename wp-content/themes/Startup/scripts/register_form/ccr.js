@@ -103,9 +103,9 @@ CCR = {
     validateStep1:function () {
         var isSessionSelected = $("#step1Section1 input:checked").length +
             $("#step1Section2 input:checked").length +
-            $("#step1Section5 input:checked").length +
             $("#step1Section3 input:checked").length +
-            $("#step1Section4 input:checked").length;
+            $("#step1Section4 input:checked").length +
+            $("#step1Section5 input:checked").length;
         if (!isSessionSelected) {
             CCR.displayErrors("Please select at least one session above!");
             return false;
@@ -449,9 +449,6 @@ CCR = {
         //every time checkbox changes states in group1, this gets executed
         $("input:checkbox[name=step1group1]").change(function () {
             CCR.displayBusSectionGroup1 = false;
-            var session6checked = 0;
-
-            //for each checkbox in group
             $("input:checkbox[name=step1group1]").each(function () {
                 if ($(this).attr("checked")) {
                     var busEnabledSectionsSelected = $(this).val().match(/session1/)? false:true;
@@ -466,12 +463,8 @@ CCR = {
                         var a = $("input:checkbox[name=step1group2]");
                         $(a[1]).attr("disabled", "disabled");
                     }
-                    //if session 6 selected, disable Backcountry Canoe Tripping option
-                    if($(this).val().match(/session6/)){
-                        $("input:checkbox[name=step1group4]").attr("disabled", "disabled");
-                    }
                 }
-                else{
+                else {
                     if($(this).val().match(/session2/)){
                         var a = $("input:checkbox[name=step1group2]");
                         $(a[0]).removeAttr("disabled");
@@ -480,20 +473,29 @@ CCR = {
                         var a = $("input:checkbox[name=step1group2]");
                         $(a[1]).removeAttr("disabled");
                     }
-                    if($(this).val().match(/session6/)){
-                        session6checked++;
-                    }
                     CCR.clearStep2Selections($(this).val());
                 }
             });
-            if(session6checked === 1){
-                $("input:checkbox[name=step1group4]").removeAttr("disabled");
-            }
             CCR.toggleBusSection();
         });
         $("input:checkbox[name=step1group5]").change(function(){
-          CCR.displayBusSectionGroup5 = false;
-          CCR.toggleBusSection();
+            CCR.displayBusSectionGroup5 = false;
+            var rookieCamps = $("input:checkbox[name=step1group5]");
+            var rookieCampsChecked = rookieCamps.length;
+            rookieCamps.each(function () {
+                if ($(this).attr("checked")) {
+                    //if any of the Rookie camps is selected, disable Backcountry Canoe Tripping option
+                    $("input:checkbox[name=step1group4]").attr("disabled", "disabled");
+                }
+                else {
+                    rookieCampsChecked--;
+                    CCR.clearStep2Selections($(this).val());
+                }
+            });
+            if(rookieCampsChecked === 0){
+                $("input:checkbox[name=step1group4]").removeAttr("disabled");
+            }
+            CCR.toggleBusSection();
         });
         $("input:checkbox[name=step1group2]").change(function () {
             CCR.displayBusSectionGroup2 = false;
@@ -550,16 +552,12 @@ CCR = {
         });
         $("input:checkbox[name=step1group4]").change(function(){
 			CCR.displayBusSectionGroup4 = false;
+            var rookiecamps = $("input:checkbox[name=step1group5]");
 			if($(this).attr("checked")){
-				CCR.displayBusSectionGroup4 = true;
-				//var summercamps = $("input:checkbox[name=step1group1]");
-				//$(summercamps[5]).attr("disabled", "disabled");
-				$('#step1Section1 input[value="group1 session6"]').attr("disabled", "disabled");
+				$(rookiecamps).attr("disabled", "disabled");
 			}
-			else{
-				//var summercamps = $("input:checkbox[name=step1group1]");
-				//$(summercamps[5]).removeAttr("disabled");
-				$('#step1Section1 input[value="group1 session6"]').removeAttr("disabled");
+			else {
+				$(rookiecamps).removeAttr("disabled");
 			}
 			CCR.toggleBusSection();
         });
@@ -576,8 +574,8 @@ CCR = {
 
     },
     toggleBusSection:function(){
-        if(CCR.displayBusSectionGroup1 || CCR.displayBusSectionGroup5 || CCR.displayBusSectionGroup2 ||
-            CCR.displayBusSectionGroup3 || CCR.displayBusSectionGroup4){
+        if(CCR.displayBusSectionGroup1 || CCR.displayBusSectionGroup2 ||
+            CCR.displayBusSectionGroup3 || CCR.displayBusSectionGroup4 || CCR.displayBusSectionGroup5){
             $("#step1Section6").fadeIn(10, function () {
                 var $ht = $("#step1").height();
                 $("#step1").parent().animate({height:$ht, speed:10});
@@ -620,12 +618,9 @@ CCR = {
             else if ($(this).attr("value") === "group1 session4") {
                 $("#step2session4, #step2session4 .heading2").show();
             }
-            else if ($(this).attr("value") === "group1 session6") {
-                $("#step2session6, #step2session6 .heading2").show();
+            else if ($(this).attr("value") === "group1 session5") {
+                $("#step2session6, #step2session5 .heading2").show();
             }
-//            else if ($(this).attr("value") === "group1 session7") {
-//                $("#step2session7").show();
-//            }
         });
         if($("input:checkbox[name=step1group1]:checked").length == 0 ){
             $("#step2notneeded").show();
@@ -717,6 +712,11 @@ CCR = {
                 $(this).removeAttr("checked");
             });
         }
+        else if(sessionNum.match(/session8/)){
+            $("#step2session8").find("input[type=checkbox]").each(function(){
+                $(this).removeAttr("checked");
+            });
+        }
 
     },
     step2RemoveCheckedFromSelect:function($qsc){
@@ -768,7 +768,7 @@ CCR = {
         var iterator = $("#step2").find("div").not(".heading2");
         iterator.each(function () {
             if ($(this).css("display") !== "none") {
-                if($(this).attr("id") === "step2session1" || $(this).attr("id") === "step2session4"){
+                if($(this).attr("id") === "step2session1" || $(this).attr("id") === "step2session4" || $(this).attr("id") === "step2session5"){
                     TotalAllowedActivities +=3;
                 }
                 else {
