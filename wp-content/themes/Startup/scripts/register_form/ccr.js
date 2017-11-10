@@ -103,6 +103,7 @@ CCR = {
     validateStep1:function () {
         var isSessionSelected = $("#step1Section1 input:checked").length +
             $("#step1Section2 input:checked").length +
+            $("#step1Section5 input:checked").length +
             $("#step1Section3 input:checked").length +
             $("#step1Section4 input:checked").length;
         if (!isSessionSelected) {
@@ -157,8 +158,23 @@ CCR = {
         }
     },
     validateStep5:function () {
+        var referrerCheck = true;
+        if ($("#step5HowDidYouHear input:checked").length == 0) {
+            CCR.displayErrors("Please tell us how did you hear about Celtic");
+            referrerCheck = false;
+        }
+        else {
+            CCR.hideErrors();
+            if ($("#step5HowDidYouHear input.other-referrer:checked").length != 0 && $("#step5HowDidYouHearOther").val() == "") {
+                CCR.displayErrors("Please specify how did you hear about Celtic");
+                referrerCheck = false;
+            }
+            else {
+                CCR.hideErrors();
+            }
+        }
         if (CCR.v.form()) {
-            return true;
+            return referrerCheck;
         }
         else {
             return false;
@@ -178,7 +194,7 @@ CCR = {
     },
     populateHiddenFields: function(){
         //clear all previously generated hidden fields:
-        $("input[type='hidden']").remove();
+        $("input[type='hidden']").not(".cartItems").remove();
         $(".step6generatedInfo").each(function(i){
             var parentID = $(this).parent().attr("id");
             var textID = ""
@@ -189,57 +205,108 @@ CCR = {
                 textID = $(this).parent().attr("id") + "Text";
             }
             $("#register_form").append("<input type='hidden'" +
+                " id='"+textID+"' name='"+textID+"' value='"+$(this).html().replace(/"|'/g, "`") +"'/>");
+            /*$("#register_form").append("<input type='hidden'" +
                 " id='"+textID+"' name='"+textID+"' value='"+$(this).html().replace(/"|'/g, "`").
-                replace(/Session/g, "<br>Session") +"'/>");
-
+                replace(/Session/g, "<br>Session") +"'/>");*/
         });
     },
     populateCampSession:function() {
+        $("input[type='hidden'].cartItems").remove();
+
+        //between March 1 and August 31 use higher price
+        var today = new Date();
+        var price = (today.getMonth() > 2 && today.getMonth() <= 7) || (today.getMonth() == 2 && today.getDate() > 1) ? 2 : 1;
+        var total = 0.0;
+
         if($("#step1 input[name=step1group1]:checked").length !== 0){//Summer Camp
-            var campSession = $("#step1 input[name=step1group1]:checked").siblings(".heading2").html();
+            var campSession = $("#step1 input[name=step1group1]:checked").siblings(".heading2").text();
             var campSessionOrdinal = "";
             $("#step1 input[name=step1group1]:checked").each(function () {
-                campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
+                var session = eval("onlinePrices.group1." + $(this).val().split(" ")[1]);
+                var sessionName = session[0];
+                var sessionPrice = session[price];
+                total += parseFloat(sessionPrice);
+                $("#register_form").append("<input type='hidden' class='cartItems' name='cartItem[]' value='" + sessionName + " " + campSession + "|" + sessionPrice + "' />");
+                campSessionOrdinal += "<br/>" + sessionName + " ($" + sessionPrice + " + HST)";
+                //campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
             });
             $("#step6CampSessionConfirm")
-                .append("<div class='step6generatedInfo'><br/>" + campSession + campSessionOrdinal + "</div>");
+                .append("<div class='step6generatedInfo'><br/><div class='sessionHeader'>" + campSession + ":</div>" + campSessionOrdinal.replace(/^<br\/>/, "") + "</div>");
+        }
+        if($("#step1 input[name=step1group5]:checked").length !== 0){//Rookie Camp
+            var campSession = $("#step1 input[name=step1group5]:checked").siblings(".heading2").text();
+            var campSessionOrdinal = "";
+            $("#step1 input[name=step1group5]:checked").each(function () {
+                var session = eval("onlinePrices.group5." + $(this).val().split(" ")[1]);
+                var sessionName = session[0];
+                var sessionPrice = session[price];
+                total += parseFloat(sessionPrice);
+                $("#register_form").append("<input type='hidden' class='cartItems' name='cartItem[]' value='" + sessionName + " " + campSession + "|" + sessionPrice + "' />");
+                campSessionOrdinal += "<br/>" + sessionName + " ($" + sessionPrice + " + HST)";
+                //campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
+            });
+            $("#step6CampSessionConfirm")
+                .append("<div class='step6generatedInfo'><br/><div class='sessionHeader'>" + campSession + ":</div>" + campSessionOrdinal.replace(/^<br\/>/, "") + "</div>");
         }
         if($("#step1 input[name=step1group2]:checked").length !== 0){//Leadership Camp
-            var campSession = $("#step1 input[name=step1group2]:checked").siblings(".heading2").html();
+            var campSession = $("#step1 input[name=step1group2]:checked").siblings(".heading2").text();
             var campSessionOrdinal = "";
             $("#step1 input[name=step1group2]:checked").each(function () {
-                campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
+                var session = eval("onlinePrices.group2." + $(this).val().split(" ")[1]);
+                var sessionName = session[0];
+                var sessionPrice = session[price];
+                total += parseFloat(sessionPrice);
+                $("#register_form").append("<input type='hidden' class='cartItems' name='cartItem[]' value='" + sessionName + " " + campSession + "|" + sessionPrice + "' />");
+                campSessionOrdinal += "<br/>" + sessionName + " ($" + sessionPrice + " + HST)";
+                //campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
             });
             $("#step6CampSessionConfirm")
-                .append("<div class='step6generatedInfo'><br/>" + campSession + campSessionOrdinal + "</div>");
+                .append("<div class='step6generatedInfo'><br/><div class='sessionHeader'>" + campSession + ":</div>" + campSessionOrdinal.replace(/^<br\/>/, "") + "</div>");
         }
         if($("#step1 input[name=step1group3]:checked").length !== 0){//Sports Camp
-            var campSession = $("#step1 input[name=step1group3]:checked").siblings(".heading2").html();
+            var campSession = $("#step1 input[name=step1group3]:checked").siblings(".heading2").text();
             var campSessionOrdinal = "";
             $("#step1 input[name=step1group3]:checked").each(function () {
-                campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
+                var session = eval("onlinePrices.group3." + $(this).val().split(" ")[1]);
+                var sessionName = session[0];
+                var sessionPrice = session[price];
+                total += parseFloat(sessionPrice);
+                $("#register_form").append("<input type='hidden' class='cartItems' name='cartItem[]' value='" + sessionName + " " + campSession + "|" + sessionPrice + "' />");
+                campSessionOrdinal += "<br/>" + sessionName + " ($" + sessionPrice + " + HST)";
+                //campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
             });
             $("#step6CampSessionConfirm")
-                .append("<div class='step6generatedInfo'><br/>" + campSession + campSessionOrdinal + "</div>");
+                .append("<div class='step6generatedInfo'><br/><div class='sessionHeader'>" + campSession + ":</div>" + campSessionOrdinal.replace(/^<br\/>/, "") + "</div>");
+			var coachName = $("#step1group3CoachName").val();
+			if(coachName !== ""){
+				$("#step6CampSessionConfirm").append("<div class='step6generatedInfo'>Coach's Name: " + coachName + "</div>");
+			}
         }
-        var coachName = $("#step1group3CoachName").val();
-        if(coachName !== ""){
-            $("#step6CampSessionConfirm").append("<div class='step6generatedInfo'><br/>Coach's Name: " + coachName + "</div>");
-        }
-        
-        if($("#step1 input[name=step1group4]:checked").length !== 0){//Killarney canoe Camp
-            var campSession = $("#step1 input[name=step1group4]:checked").siblings(".heading2").html();
+        if($("#step1 input[name=step1group4]:checked").length !== 0){//Backcountry Canoe Tripping
+            var campSession = $("#step1 input[name=step1group4]:checked").siblings(".heading2").text();
             var campSessionOrdinal = "";
             $("#step1 input[name=step1group4]:checked").each(function () {
-                campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
+                var session = eval("onlinePrices.group4." + $(this).val().split(" ")[1]);
+                var sessionName = session[0];
+                var sessionPrice = session[price];
+                total += parseFloat(sessionPrice);
+                $("#register_form").append("<input type='hidden' class='cartItems' name='cartItem[]' value='" + sessionName + " " + campSession + "|" + sessionPrice + "' />");
+                campSessionOrdinal += "<br/>" + sessionName + " ($" + sessionPrice + " + HST)";
+                //campSessionOrdinal += "<br/>" + $(this).val().split(" ")[1].replace(/(\d)/g, " $1 ");
             });
             $("#step6CampSessionConfirm")
-                .append("<div class='step6generatedInfo'><br/>" + campSession + campSessionOrdinal + "</div>");
+                .append("<div class='step6generatedInfo'><br/><div class='sessionHeader'>" + campSession + ":</div>" + campSessionOrdinal.replace(/^<br\/>/, "") + "</div>");
         }
 
+        if(total > 0) {
+            $("#step6CampSessionConfirm")
+                .append("<div class='step6generatedInfo'><br/><div class='sessionHeader'>Total:</div>$" + (Math.round(total * 113) / 100) + " ($" + (Math.round(total * 100) / 100) + " + HST)</div>");
+        }
     },
     populateBusTransport:function () {
-        var busTransport = $("#step1 input[name=step1group5]:checked");
+        var busTransport = $("#step1 input[name=step1group6]:checked");
+        var pickupDropoff = $("#step1 input[name=step1group7]:checked");
         var formattedOutput = "";
         if (busTransport.length) {
             $("#step6BusTransportationConfirm").prev(".solidBorder").show();
@@ -248,6 +315,9 @@ CCR = {
                 formattedOutput += "<br/>" + $(this).val().split(" ")[1].replace(/from/, "From ")
                     .replace(/to/, "To ")
                     .replace(/(\d)/g, " $1 ");
+            });
+            pickupDropoff.each(function () {
+                formattedOutput += "<br/>Pick-up/Drop-off: " + $(this).val().split(" ")[1];
             });
             $("#step6BusTransportationConfirm").append("<div class='step6generatedInfo'>" + formattedOutput + "</div>");
         } else {
@@ -262,7 +332,7 @@ CCR = {
             var displayActivities = "";
             $("#step2 div").each(function () {
                 if ($(this).css("display") === "block" && !!$(this).attr("id")) {
-                    var sessionID = "<div class='sessionHeader'>" + $(this).attr("id").replace(/step\d/, "")
+                    var sessionID = "<br/><div class='sessionHeader'>" + $(this).attr("id").replace(/step\d/, "")
                         .replace(/(\d)/, " $1").replace(/session/, "Session") + ":&nbsp;</div>";
                     displayActivities += sessionID;
                     $(this).children("input:checkbox:checked").each(function () {
@@ -270,7 +340,7 @@ CCR = {
                     });
                     //strip the last breakline:
                     displayActivities.replace(/<br\/>$/, "");
-                    displayActivities += "Alternate:" + $(this).children("select").children("option:selected").html();
+                    displayActivities += "Alternate:" + $(this).children("select").children("option:selected").html() + "<br/>";
                 }
             });
             $("#step6ActivitiesConfirm").append("<div class='step6generatedInfo'>" + displayActivities + "</div>");
@@ -299,8 +369,8 @@ CCR = {
     populateHealthInfo:function () {
         var healthInfo = "";
         healthInfo += "Family Doctor: " + $("#step4FamilyDoctor").val() + "<br/>";
-        healthInfo += "Doctor's phone: " + $("#step4FamilyDoctorTelephone").val() + "<br/>";
-        healthInfo += "Health Card No.: " + $("#step4HealthCard\\#").val() + "<br/>";
+        healthInfo += "Doctor's phone: " + CCR.formatPhoneNumber($("#step4FamilyDoctorTelephone").val()) + "<br/>";
+        healthInfo += "Health Card No.: " + CCR.formatHealthCard($("#step4HealthCard").val()) + "<br/>";
         healthInfo += "Date of Last Tetanus Shot: " + $("#step4DateOfLastTetanusShot").val() + "<br/>";
         var medicalHistory = $("#step4MedicalHistory").val();
         if(medicalHistory.length){
@@ -323,31 +393,36 @@ CCR = {
         if(aparentName.length){
            parentInfo += $("#step5FirstName2").val() + " " + $("#step5LastName2").val() + "<br/>";
         }
-        parentInfo += "Home phone 1: " + $("#step5HomeTelephone1").val() + "<br/>";
-        var alterPhone1 = $("#step5AlternateTelephone1").val();
+        parentInfo += "Home phone #1: " + CCR.formatPhoneNumber($("#step5HomeTelephone1").val()) + "<br/>";
+        var alterPhone1 = CCR.formatPhoneNumber($("#step5AlternateTelephone1").val());
         if(alterPhone1.length){
-            parentInfo += "Alternate phone 1: " + alterPhone1 + "<br/>";
+            parentInfo += "Alternate phone #1: " + alterPhone1 + "<br/>";
         }
-        var homePhone2 = $("#step5HomeTelephone2").val();
+        var homePhone2 = CCR.formatPhoneNumber($("#step5HomeTelephone2").val());
         if(homePhone2.length){
-            parentInfo += "Home phone 2: " + homePhone2 + "<br/>";
+            parentInfo += "Home phone #2: " + homePhone2 + "<br/>";
         }
-        var alterPhone2 = $("#step5AlternateTelephone2").val();
+        var alterPhone2 = CCR.formatPhoneNumber($("#step5AlternateTelephone2").val());
         if(alterPhone2.length){
-            parentInfo += "Alternate phone 2: " + alterPhone2 + "<br/>";
+            parentInfo += "Alternate phone #2: " + alterPhone2 + "<br/>";
         }
-        parentInfo += "Email 1: " + $("#step5Email1").val() + "<br/>";
+        parentInfo += "Email #1: " + $("#step5Email1").val() + "<br/>";
         var aemail = $("#step5Email2").val();
         if(aemail.length){
-            parentInfo += "Email 2: " + aemail + "<br/>";
+            parentInfo += "Email #2: " + aemail + "<br/>";
         }
         var additionalInfo = $("#step5AdditionalInfo").val();
         if(additionalInfo.length){
             parentInfo += "Additional Info: " + additionalInfo + "<br/>";
         }
-        var referer = $("#step5HowDidYouHear").val();
+        var referer = [];
+        $.each($("#step5HowDidYouHear > input:checked"), function() {
+            var val = $(this).val();
+            if (val == "Other:") val += " " + $("#step5HowDidYouHearOther").val();
+            referer.push("<br/>- " + val);
+        });
         if(referer.length){
-            parentInfo += "How did you hear about camp celtic: " + referer + "<br/>";
+            parentInfo += "How did you hear about Camp Celtic: " + referer.join("") + "<br/>";
         }
         $("#step6ParentInfoConfirm").append("<div class='step6generatedInfo'>" + parentInfo + "</div>");
     },
@@ -364,16 +439,17 @@ CCR = {
     },
     initStep1Events:function () {
         //Step1 inputs are grouped:
-        //Group 1 is summer camp
-        //Group 2 is leadership camp
-        //Group 3 is sports camp
-        //Group 4 is Killarney
-        //Group 5 is bus transport
+        //Group 1 is Summer Camp
+        //Group 5 is Rookie Camp
+        //Group 2 is Leadership Camp
+        //Group 3 is Sports Camp
+        //Group 4 is Backcountry Canoe Tripping
+        //Group 6 is bus transport
 
         //every time checkbox changes states in group1, this gets executed
         $("input:checkbox[name=step1group1]").change(function () {
             CCR.displayBusSectionGroup1 = false;
-            var session5checked = 0;
+            var session6checked = 0;
 
             //for each checkbox in group
             $("input:checkbox[name=step1group1]").each(function () {
@@ -381,17 +457,17 @@ CCR = {
                     var busEnabledSectionsSelected = $(this).val().match(/session1/)? false:true;
                     CCR.displayBusSectionGroup1 |= busEnabledSectionsSelected;//Beware the bitwise OR assignment here :)
                     CCR.hideErrors();
-                    //if session 2 or 4 selected, disable corresponding one in Leadership camp:
+                    //if session 2 or 3 selected, disable corresponding one in Leadership Camp:
                     if($(this).val().match(/session2/)){
                         var a = $("input:checkbox[name=step1group2]");
                         $(a[0]).attr("disabled", "disabled");
                     }
-                    if($(this).val().match(/session4/)){
+                    if($(this).val().match(/session3/)){
                         var a = $("input:checkbox[name=step1group2]");
                         $(a[1]).attr("disabled", "disabled");
                     }
-                    //if session 5 selected, disable Killarney canoe tripping option
-                    if($(this).val().match(/session5/)){
+                    //if session 6 selected, disable Backcountry Canoe Tripping option
+                    if($(this).val().match(/session6/)){
                         $("input:checkbox[name=step1group4]").attr("disabled", "disabled");
                     }
                 }
@@ -400,20 +476,24 @@ CCR = {
                         var a = $("input:checkbox[name=step1group2]");
                         $(a[0]).removeAttr("disabled");
                     }
-                    if($(this).val().match(/session4/)){
+                    if($(this).val().match(/session3/)){
                         var a = $("input:checkbox[name=step1group2]");
                         $(a[1]).removeAttr("disabled");
                     }
-                    if($(this).val().match(/session5/)){
-                        session5checked++;
+                    if($(this).val().match(/session6/)){
+                        session6checked++;
                     }
                     CCR.clearStep2Selections($(this).val());
                 }
             });
-            if(session5checked === 1){
+            if(session6checked === 1){
                 $("input:checkbox[name=step1group4]").removeAttr("disabled");
             }
             CCR.toggleBusSection();
+        });
+        $("input:checkbox[name=step1group5]").change(function(){
+          CCR.displayBusSectionGroup5 = false;
+          CCR.toggleBusSection();
         });
         $("input:checkbox[name=step1group2]").change(function () {
             CCR.displayBusSectionGroup2 = false;
@@ -423,9 +503,9 @@ CCR = {
                         var a = $("input:checkbox[name=step1group1]");
                         $(a[1]).attr("disabled", "disabled");
                     }
-                    if($(this).val().match(/session4/)){
+                    if($(this).val().match(/session3/)){
                         var a = $("input:checkbox[name=step1group1]");
-                        $(a[3]).attr("disabled", "disabled");
+                        $(a[2]).attr("disabled", "disabled");
                     }
                     CCR.displayBusSectionGroup2 = true;
                     CCR.hideErrors();
@@ -435,9 +515,9 @@ CCR = {
                         var a = $("input:checkbox[name=step1group1]");
                         $(a[1]).removeAttr("disabled");
                     }
-                    if($(this).val().match(/session4/)){
+                    if($(this).val().match(/session3/)){
                         var a = $("input:checkbox[name=step1group1]");
-                        $(a[3]).removeAttr("disabled");
+                        $(a[2]).removeAttr("disabled");
                     }
                 }
             });
@@ -469,30 +549,56 @@ CCR = {
             CCR.toggleBusSection();
         });
         $("input:checkbox[name=step1group4]").change(function(){
-          CCR.displayBusSectionGroup4 = false;
-          if($(this).attr("checked")){
-              CCR.displayBusSectionGroup4 = true;
-            var summercamps = $("input:checkbox[name=step1group1]");
-              $(summercamps[4]).attr("disabled", "disabled");
-          }
-          else{
-              var summercamps = $("input:checkbox[name=step1group1]");
-              $(summercamps[4]).removeAttr("disabled");
-          }
-          CCR.toggleBusSection();
+			CCR.displayBusSectionGroup4 = false;
+			if($(this).attr("checked")){
+				CCR.displayBusSectionGroup4 = true;
+				//var summercamps = $("input:checkbox[name=step1group1]");
+				//$(summercamps[5]).attr("disabled", "disabled");
+				$('#step1Section1 input[value="group1 session6"]').attr("disabled", "disabled");
+			}
+			else{
+				//var summercamps = $("input:checkbox[name=step1group1]");
+				//$(summercamps[5]).removeAttr("disabled");
+				$('#step1Section1 input[value="group1 session6"]').removeAttr("disabled");
+			}
+			CCR.toggleBusSection();
+        });
+        $("input:checkbox[name=step1group6]").change(function(){
+			CCR.displayPickupDropoff = false;
+            var sessions = $("input:checkbox[name=step1group6]");
+            sessions.each(function () {
+                if ($(this).attr("checked")) {
+                    CCR.displayPickupDropoff = true;
+                }
+            });
+			CCR.togglePickupDropoff();
         });
 
     },
     toggleBusSection:function(){
-        if(CCR.displayBusSectionGroup1 || CCR.displayBusSectionGroup2 ||
+        if(CCR.displayBusSectionGroup1 || CCR.displayBusSectionGroup5 || CCR.displayBusSectionGroup2 ||
             CCR.displayBusSectionGroup3 || CCR.displayBusSectionGroup4){
-            $("#step1Section5").fadeIn(10, function () {
+            $("#step1Section6").fadeIn(10, function () {
                 var $ht = $("#step1").height();
                 $("#step1").parent().animate({height:$ht, speed:10});
             });
         }
         else{
-            $("#step1Section5").fadeOut(150, function () {
+            $("#step1Section6").fadeOut(150, function () {
+                var $ht = $("#step1").height();
+                $("#step1").parent().animate({height:$ht, speed:20});
+            });
+        }
+    },
+    togglePickupDropoff:function(){
+        if(CCR.displayPickupDropoff){
+            $("#step1Section7").fadeIn(10, function () {
+                var $ht = $("#step1").height();
+                $("#step1").parent().animate({height:$ht, speed:10});
+            });
+        }
+        else{
+            $("#step1Section7").fadeOut(150, function () {
                 var $ht = $("#step1").height();
                 $("#step1").parent().animate({height:$ht, speed:20});
             });
@@ -514,11 +620,11 @@ CCR = {
             else if ($(this).attr("value") === "group1 session4") {
                 $("#step2session4, #step2session4 .heading2").show();
             }
-            else if ($(this).attr("value") === "group1 session5") {
-                $("#step2session5, #step2session5 .heading2").show();
+            else if ($(this).attr("value") === "group1 session6") {
+                $("#step2session6, #step2session6 .heading2").show();
             }
-//            else if ($(this).attr("value") === "group1 session6") {
-//                $("#step2session6").show();
+//            else if ($(this).attr("value") === "group1 session7") {
+//                $("#step2session7").show();
 //            }
         });
         if($("input:checkbox[name=step1group1]:checked").length == 0 ){
@@ -606,6 +712,11 @@ CCR = {
                 $(this).removeAttr("checked");
             });
         }
+        else if(sessionNum.match(/session7/)){
+            $("#step2session7").find("input[type=checkbox]").each(function(){
+                $(this).removeAttr("checked");
+            });
+        }
 
     },
     step2RemoveCheckedFromSelect:function($qsc){
@@ -667,7 +778,6 @@ CCR = {
         });
         return TotalAllowedActivities;
     },
-
     step3SetCountry:function (country, identifier){
       if(country === "CA"){
           $("select#step3Country option:nth-child(2)").removeAttr("selected");
@@ -687,7 +797,6 @@ CCR = {
 
       return true;
     },
-
     initValidate:function () {
         $.validator.addMethod(
             "province_or_state",
@@ -784,10 +893,7 @@ CCR = {
                 }
             },
             submitHandler: function(form) {
-                jQuery(form).ajaxSubmit({
-                    target: "#register_form_result",
-                    success: CCR.showResponse
-                });
+				form.submit();
             }
         });
     },
@@ -810,6 +916,22 @@ CCR = {
     },
     showResponse: function(){
         $("#slider").cycle("next");
+    },
+    formatPhoneNumber: function(s) {
+        if(s.indexOf("-") === -1 || s.split("-").length !== 3) {
+            var r = ("" + s).replace(/\D/g, "").substr(0, 10);
+            var m = r.match(/^(\d{3})(\d{3})(\d{4})$/);
+            return (!m) ? "" : "" + m[1] + "-" + m[2] + "-" + m[3];
+        }
+        return s;
+    },
+    formatHealthCard: function(s) {
+        if(s.indexOf("-") === -1 || s.split("-").length !== 4) {
+            var r = ("" + s.toUpperCase()).replace(/[^A-Z0-9]/g, "").substr(0, 12);
+            var m = r.match(/^(\d{4})(\d{3})(\d{3})([A-Z]{2})$/);
+            return (!m) ? "" : "" + m[1] + "-" + m[2] + "-" + m[3] + "-" + m[4];
+        }
+        return s;
     }
 };
 
