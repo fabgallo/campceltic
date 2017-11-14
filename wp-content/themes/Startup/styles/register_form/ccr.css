@@ -198,6 +198,8 @@ input.startrow {
     resize: none;
     margin-top: 10px;
     margin-right:10px;
+}
+#step5 textarea, #step5HowDidYouHear {
     margin-bottom: 10px;
 }
 #step4MedicationsTaken {

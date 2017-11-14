@@ -372,6 +372,7 @@ CCR = {
         healthInfo += "Doctor's phone: " + CCR.formatPhoneNumber($("#step4FamilyDoctorTelephone").val()) + "<br/>";
         healthInfo += "Health Card No.: " + CCR.formatHealthCard($("#step4HealthCard").val()) + "<br/>";
         healthInfo += "Date of Last Tetanus Shot: " + $("#step4DateOfLastTetanusShot").val() + "<br/>";
+        healthInfo += "Vegetarian: " + $("input[name='step4Vegetarian']:checked").val() + "<br/>";
         var medicalHistory = $("#step4MedicalHistory").val();
         if(medicalHistory.length){
             healthInfo += "Medical History: " + medicalHistory + "<br/>";
@@ -619,7 +620,7 @@ CCR = {
                 $("#step2session4, #step2session4 .heading2").show();
             }
             else if ($(this).attr("value") === "group1 session5") {
-                $("#step2session6, #step2session5 .heading2").show();
+                $("#step2session5, #step2session5 .heading2").show();
             }
         });
         if($("input:checkbox[name=step1group1]:checked").length == 0 ){
@@ -660,7 +661,7 @@ CCR = {
             var $qsu = $("#" + $(this).parent().attr("id") + " input[type=checkbox]:not(:checked)");
             CCR.step2AddUncheckedToSelect($qsu);
 
-            var activitiesLimit = $(this).attr("value").match(/session1|session4/g)? 2: 3;
+            var activitiesLimit = $(this).attr("value").match(/session1|session4|session5/g)? 2: 3;
 
             if ($qsc.length > activitiesLimit) {
                 $qsu.attr("disabled", "disabled");
@@ -850,6 +851,9 @@ CCR = {
                     required:false,
                     dateITA:true
                 },
+                step4Vegetarian:{
+                    required:false
+                },
                 step5HomeTelephone1:{
                     required:true,
                     phoneUS:true
@@ -882,6 +886,9 @@ CCR = {
                 step4DateOfLastTetanusShot:{
                     required:"Date of last tetanus shot is required",
                     dateITA:"Please enter the date in dd/mm/yyyy format"
+                },
+                step4Vegetarian:{
+                    required:"Please specify if vegetarian or not"
                 },
                 step5HomeTelephone1:{
                     required:"Home Telephone is required",
