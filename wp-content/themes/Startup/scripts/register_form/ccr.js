@@ -283,7 +283,7 @@ CCR = {
 				$("#step6CampSessionConfirm").append("<div class='step6generatedInfo'>Coach's Name: " + coachName + "</div>");
 			}
         }
-        if($("#step1 input[name=step1group4]:checked").length !== 0){//Backcountry Canoe Tripping
+        if($("#step1 input[name=step1group4]:checked").length !== 0){//French River Canoe Tripping
             var campSession = $("#step1 input[name=step1group4]:checked").siblings(".heading2").text();
             var campSessionOrdinal = "";
             $("#step1 input[name=step1group4]:checked").each(function () {
@@ -444,7 +444,7 @@ CCR = {
         //Group 5 is Rookie Camp
         //Group 2 is Leadership Camp
         //Group 3 is Sports Camp
-        //Group 4 is Backcountry Canoe Tripping
+        //Group 4 is French River Canoe Tripping
         //Group 6 is bus transport
 
         //every time checkbox changes states in group1, this gets executed
@@ -485,7 +485,7 @@ CCR = {
             var rookieCampsChecked = rookieCamps.length;
             rookieCamps.each(function () {
                 if ($(this).attr("checked")) {
-                    //if any of the Rookie camps is selected, disable Backcountry Canoe Tripping option
+                    //if any of the Rookie camps is selected, disable French River Canoe Tripping option
                     $("input:checkbox[name=step1group4]").attr("disabled", "disabled");
                 }
                 else {
