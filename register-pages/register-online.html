@@ -1,5 +1,20 @@
 [raw]<link href="//campceltic.ca/wp-content/themes/Startup/styles/register_form/ccr.css" rel="Stylesheet" type="text/css" />
 <script type="text/javascript">
+    var availability = [
+        ["EnableSummerSession1", true],
+        ["EnableSummerSession2", true],
+        ["EnableSummerSession3", true],
+        ["EnableSummerSession4", false],
+        ["EnableSummerSession5", true],
+        ["EnableRookieSession6", true],
+        ["EnableRookieSession7", true],
+        ["EnableLeadershipSession2", true],
+        ["EnableLeadershipSession3", true],
+        ["EnableBasketballSession", true],
+        ["EnableVolleyballSession", true],
+        ["EnableCanoeSession", true]
+    ];
+
     var onlinePrices = {
         "group1": {
             "session1": ["Session 1", 885, 945],
@@ -34,27 +49,27 @@
                 <br/><br/>Please choose one camp session. Refer to the Camp Sessions chart to the right for dates and duration.
                 <div id="step1Section1">
                     <div class="heading2">Summer Camp <span class="agegroup">Ages 7-16</span></div>
-                    <input class="startrow" type="checkbox" name="step1group1" value="group1 session1" /> <span>Session 1</span> <input type="checkbox" name="step1group1" value="group1 session2" /><span>Session 2</span> <input type="checkbox" name="step1group1" value="group1 session3" /><span>Session 3</span><br/>
-                    <input class="startrow" type="checkbox" name="step1group1" value="group1 session4" /> <span>Session 4</span> <input type="checkbox" name="step1group1" value="group1 session5" /><span>Session 5</span></div>
+                    <input class="startrow" type="checkbox" id="EnableSummerSession1" name="step1group1" value="group1 session1" /> <span>Session 1</span> <input type="checkbox" id="EnableSummerSession2" name="step1group1" value="group1 session2" /><span>Session 2</span> <input type="checkbox" id="EnableSummerSession3" name="step1group1" value="group1 session3" /><span>Session 3</span><br/>
+                    <input class="startrow" type="checkbox" id="EnableSummerSession4" name="step1group1" value="group1 session4" /> <span>Session 4</span> <input type="checkbox" id="EnableSummerSession5" name="step1group1" value="group1 session5" /><span>Session 5</span></div>
                 <div id="step1Section5">
                     <div class="heading2">Rookie Camp <span class="agegroup">Ages 6-8</span></div>
-                    <input class="startrow" type="checkbox" name="step1group5" value="group5 session6" /> <span>Session 6</span> <input type="checkbox" name="step1group5" value="group5 session7" /> <span>Session 7</span>
+                    <input class="startrow" type="checkbox" id="EnableRookieSession6" name="step1group5" value="group5 session6" /> <span>Session 6</span> <input type="checkbox" id="EnableRookieSession7" name="step1group5" value="group5 session7" /><span>Session 7</span>
 
                 </div>
                 <div id="step1Section2">
                     <div class="heading2">Leadership Camp <span class="agegroup">Ages 17-18</span></div>
-                    <input class="startrow" type="checkbox" name="step1group2" value="group2 session2" /><span>Session 2</span> <input type="checkbox" name="step1group2" value="group2 session3" /> <span>Session 3</span><br/>
+                    <input class="startrow" type="checkbox" id="EnableLeadershipSession2" name="step1group2" value="group2 session2" /><span>Session 2</span> <input type="checkbox" id="EnableLeadershipSession3" name="step1group2" value="group2 session3" /> <span>Session 3</span><br/>
                     Please refer to the <a href="http://campceltic.ca/programme/leadership-camp/"><span style="text-decoration: underline;">Leadership Camp page</span></a> for all application requirements.
 
                 </div>
                 <div id="step1Section3">
                     <div class="heading2">Sports Camp <span class="agegroup">Ages 13-18</span></div>
-                    Session 8:    <input class="startrow" type="checkbox" name="step1group3" value="group3 basketball" /><span>Basketball</span> <input type="checkbox" name="step1group3" value="group3 volleyball" /><span>Volleyball</span>
+                    Session 8:    <input class="startrow" id="EnableBasketballSession" type="checkbox" name="step1group3" value="group3 basketball" /><span>Basketball</span> <input type="checkbox" id="EnableVolleyballSession" name="step1group3" value="group3 volleyball" /><span>Volleyball</span>
 
                     <label for="step1group3CoachName">(optional) Coach's Name </label> <input class="startrow" id="step1group3CoachName" type="text" name="step1group3CoachName" /></div>
                 <div id="step1Section4">
                     <div class="heading2">French River Canoe Tripping <span class="agegroup">Ages 14-17</span></div>
-                    <input type="checkbox" name="step1group4" value="group4 canoe" /> <span>August 8-17</span><br/>
+                    <input type="checkbox" id="EnableCanoeSession" name="step1group4" value="group4 canoe" /> <span>August 8-17</span><br/>
                     Please refer to the <a href="http://campceltic.ca/programme/canoe-tripping/"><span style="text-decoration: underline;">French River Canoe Tripping page</span></a> for all information and requirements.
 
                 </div>
@@ -291,6 +306,15 @@
 
     $(document).ready(function() {
         if(inIframe()) window.top.location = self.location;
+
+        for (var i = 0; i < availability.length; i++) {
+            if(!availability[i][1]) {
+                var checkbox = $("#" + availability[i][0]);
+                checkbox.attr("disabled", true);
+                checkbox.next().css("text-decoration", "line-through");
+                checkbox.next().attr("title", "Sold Out");
+            }
+        }
 
         new Cleave('#step3DateOfBirth', {
             date: true,
